@@ -1,4 +1,4 @@
-name: Publish WeChat dashboard
+name: Sync WeChat dashboard
 
 on:
   push:
@@ -12,19 +12,14 @@ on:
 
 permissions:
   contents: write
-  pages: write
-  id-token: write
 
 concurrency:
-  group: github-pages
+  group: wechat-dashboard-sync
   cancel-in-progress: true
 
 jobs:
-  deploy:
+  sync:
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -51,14 +46,3 @@ jobs:
             git commit -m "chore: refresh WeChat dashboard"
             git push
           fi
-      - name: Configure Pages
-        uses: actions/configure-pages@v5
-        with:
-          enablement: true
-      - name: Upload dashboard
-        uses: actions/upload-pages-artifact@v4
-        with:
-          path: wechat-dashboard
-      - name: Deploy dashboard
-        id: deployment
-        uses: actions/deploy-pages@v4
