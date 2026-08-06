@@ -1,0 +1,54 @@
+name: Publish WeChat dashboard
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "wechat-dashboard/**"
+      - ".github/workflows/wechat-dashboard-pages.yml"
+  schedule:
+    - cron: "*/5 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Refresh WeChat data
+        shell: bash
+        run: |
+          set -eu
+          source_url="https://feifan-ai-content-desk.songc7487.chatgpt.site"
+          curl -fsS --retry 3 --max-time 120 -A "Mozilla/5.0 GitHub-Actions" -X POST "$source_url/api/auto-sync" >/dev/null || true
+          fresh_file="$(mktemp)"
+          if curl -fsS --retry 3 --max-time 60 -A "Mozilla/5.0 GitHub-Actions" "$source_url/api/articles" -o "$fresh_file"; then
+            mv "$fresh_file" wechat-dashboard/data.json
+          else
+            rm -f "$fresh_file"
+            echo "Using the last bundled data snapshot."
+          fi
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+        with:
+          enablement: true
+      - name: Upload dashboard
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: wechat-dashboard
+      - name: Deploy dashboard
+        id: deployment
+        uses: actions/deploy-pages@v4
