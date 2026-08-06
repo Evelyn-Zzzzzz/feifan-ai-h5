@@ -28,13 +28,13 @@ jobs:
         run: |
           set -eu
           source_url="https://feifan-ai-content-desk.songc7487.chatgpt.site"
-          curl -fsS --retry 3 --max-time 120 -A "Mozilla/5.0 GitHub-Actions" -X POST "$source_url/api/auto-sync" >/dev/null || true
           fresh_file="$(mktemp)"
-          if curl -fsS --retry 3 --max-time 60 -A "Mozilla/5.0 GitHub-Actions" "$source_url/api/articles" -o "$fresh_file"; then
+          if curl -fsS --retry 3 --max-time 120 -A "Mozilla/5.0 GitHub-Actions" -X POST "$source_url/api/auto-sync" >/dev/null \
+            && curl -fsS --retry 3 --max-time 60 -A "Mozilla/5.0 GitHub-Actions" "$source_url/api/articles" -o "$fresh_file"; then
             mv "$fresh_file" wechat-dashboard/data.json
           else
             rm -f "$fresh_file"
-            echo "Using the last bundled data snapshot."
+            echo "WeChat sync failed; preserving the last verified data snapshot."
           fi
       - name: Update public GitHub table
         run: |
