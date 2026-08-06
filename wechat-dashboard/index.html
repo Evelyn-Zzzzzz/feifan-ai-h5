@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="创非凡AI全域服务公众号内容与传播数据看板">
+  <title>创非凡AI｜公众号动态数据看板</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="shell">
+    <header class="hero">
+      <div class="brand">非凡</div>
+      <div>
+        <p class="eyebrow">创非凡AI全域服务 · 内容运营中心</p>
+        <h1>公众号动态数据看板</h1>
+        <p class="intro">自动发现新推文，并持续呈现微信已开放的阅读、分享与互动指标。</p>
+      </div>
+      <div class="live"><i></i><span>自动更新</span><small id="updatedAt">正在读取数据…</small></div>
+    </header>
+
+    <section class="kpis" aria-label="数据总览">
+      <article><span>已收录内容</span><strong id="articleCount">—</strong><small>篇</small></article>
+      <article class="accent"><span>累计阅读人数</span><strong id="readUser">—</strong><small>人</small></article>
+      <article><span>分享人数</span><strong id="shareUser">—</strong><small>人</small></article>
+      <article><span>阅读后关注</span><strong id="subscribeUser">—</strong><small>人</small></article>
+      <article><span>平均完读率</span><strong id="finishRate">—</strong><small>官方可用数据</small></article>
+    </section>
+
+    <section class="insights">
+      <article class="panel">
+        <div class="panel-head"><div><p class="eyebrow">传播表现</p><h2>阅读 Top 5</h2></div><span>按累计阅读人数</span></div>
+        <div id="ranking" class="ranking"></div>
+      </article>
+      <aside class="panel sync-panel">
+        <p class="eyebrow">同步状态</p>
+        <h2 id="syncStatus">等待数据</h2>
+        <p id="syncTime">—</p>
+        <small id="syncMessage">新推文约每 5 分钟检查一次；传播指标按微信官方开放时间更新。</small>
+      </aside>
+    </section>
+
+    <section class="panel table-panel">
+      <div class="toolbar">
+        <div><p class="eyebrow">公开数据表</p><h2>内容明细与运营记录</h2></div>
+        <div class="filters">
+          <label>搜索<input id="search" placeholder="标题、摘要或关键词"></label>
+          <label>分类<select id="category"><option>全部分类</option></select></label>
+        </div>
+      </div>
+      <p id="notice" class="notice" hidden></p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>发布日期 / 标题</th><th>分类</th><th>核心摘要</th><th>关键词</th><th>阅读</th><th>分享</th><th>在看 / 点赞</th><th>完读率</th><th>状态</th><th>本机备注</th></tr></thead>
+          <tbody id="rows"><tr><td colspan="10" class="empty">正在载入公众号数据…</td></tr></tbody>
+        </table>
+      </div>
+      <footer><span id="count">共 0 条内容</span><span>公开访问；备注仅保存在当前浏览器，不上传。</span></footer>
+    </section>
+  </main>
+  <script src="app.js" defer></script>
+</body>
+</html>
