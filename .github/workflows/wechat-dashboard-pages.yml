@@ -1,4 +1,4 @@
-name: Sync WeChat dashboard
+name: Build WeChat dashboard snapshot
 
 on:
   push:
@@ -6,36 +6,21 @@ on:
     paths:
       - "wechat-dashboard/**"
       - ".github/workflows/wechat-dashboard-pages.yml"
-  schedule:
-    - cron: "*/5 * * * *"
   workflow_dispatch:
 
 permissions:
   contents: write
 
 concurrency:
-  group: wechat-dashboard-sync
+  group: wechat-dashboard-build
   cancel-in-progress: true
 
 jobs:
-  sync:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v6
-      - name: Refresh WeChat data
-        shell: bash
-        run: |
-          set -eu
-          source_url="https://feifan-ai-content-desk.songc7487.chatgpt.site"
-          fresh_file="$(mktemp)"
-          if curl -fsS --retry 3 --max-time 120 -A "Mozilla/5.0 GitHub-Actions" -X POST "$source_url/api/auto-sync" >/dev/null \
-            && curl -fsS --retry 3 --max-time 60 -A "Mozilla/5.0 GitHub-Actions" "$source_url/api/articles" -o "$fresh_file"; then
-            mv "$fresh_file" wechat-dashboard/data.json
-          else
-            rm -f "$fresh_file"
-            echo "WeChat sync failed; preserving the last verified data snapshot."
-          fi
       - name: Update public GitHub table
         run: |
           node wechat-dashboard/render-dashboard.mjs
